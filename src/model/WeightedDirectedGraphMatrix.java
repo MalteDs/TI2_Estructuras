@@ -38,6 +38,8 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
     public void addEdge(T sourceData, T destData, int weight) {
         int sourceIndex = getIndex(sourceData);
         int destIndex = getIndex(destData);
+        System.out.println(sourceIndex);
+        System.out.println(destIndex);
         if (sourceIndex != -1 && destIndex != -1) {
             adjacencyMatrix[sourceIndex][destIndex] = weight;
         }
@@ -209,6 +211,13 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
 
         vertices = newVertices;
         adjacencyMatrix = newAdjacencyMatrix;
+    }
+    public String printVertices() {
+        String msg= "";
+        for (int i = 0; i < vertexCount; i++) {
+            msg+=("Vertex " + (i + 1) + ": " + vertices[i].getValue()+" Conections "+vertices[i].getAdjacent().toString()+"\n");
+        }
+        return  msg;
     }
 
 }

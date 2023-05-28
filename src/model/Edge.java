@@ -40,7 +40,7 @@ public class Edge<T> {
     }
     @Override
     public String toString() {
-        return "Edge{" + "destination=" + destination + ", weight=" + weight + '}';
+        return "Edge {" + "destination=" + destination + ", weight=" + weight + '}';
     }
 }
 
