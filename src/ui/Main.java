@@ -24,35 +24,45 @@ public class Main {
 
     public int getOptionShowMenu(){
         int option = 0;
-        System.out.println(printMenu());
+        print(printMenu());
         option = reader.nextInt();
         return option;
     }
     public void executeOption(int option) throws IOException {
-
+        String dest="";
+        String a="";
         switch(option){
 
+
             case 1:
-                    print(controller.print());
+                printCities();
                 break;
             case 2:
+                printCities();
+                print("what is the city where you are going to start?");
+                a=reader.nextLine();
+                String start=reader.nextLine();
+                print("what is the destination?");
+                dest= reader.nextLine();
+                startTravel(start,dest);
 
                 break;
             case 3:
+                printCities();
+                print("what is the city where you are going to start?");
+                a=reader.nextLine();
+                start=reader.nextLine();
+                print("what is the destination?");
+                dest= reader.nextLine();
+                distanceBeteenCities(start, dest);
 
                 break;
-            case 4:
-
-                break;
-            case 5:
-                break;
-            case 6:
 
             case 0:
                 break;
 
             default :
-                System.out.println("Su eleccion no es correcta");
+                print("invalid option");
                 break;
         }
     }
@@ -60,18 +70,28 @@ public class Main {
         return
                 "\n" +
                         "<< ------------------------------------------------ >>\n" +
-                        "<<                 Airplane System                   >> \n"+
+                        "<<                 Transport terminal               >> \n"+
                         "<< ------------------------------------------------ >>\n"+
-                        "1. Mirar Ciudades \n"+
-                        "2. Iniciar Viaje \n"+
-                        "3. Conccer distancia\n"+
+                        "1. Show  cities \n"+
+                        "2. Start a travel \n"+
+                        "3. look at the distance between cities \n"+
                         "0. Exit";
     }
+    public void printCities(){
+        String msg= controller.print();
+        print( msg);
+    }
+    public void distanceBeteenCities(String start,String dest ){
+        controller.distanceBeteenCities(start,dest);
+        print (" The distance between cities from "+ start +" to "+dest+ " is "+Controller.DISTANCE +" cities");
+    }
+    public void startTravel(String start , String dest){
+        String msg= controller.startTravel(start,dest);
+        if(msg==null){
+            print( "the cities you chose do not exist");
+        }else{
+            print("The cities you need to visit to reach your destination with the shortest distance are:");
+            print( msg);
+        }
 
-
-
-
-
-
-
-}
+    }

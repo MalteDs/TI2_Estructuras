@@ -5,7 +5,8 @@ import com.google.gson.Gson;
 import java.io.*;
 import java.util.ArrayList;
 
-public class Controller {
+public class Controller<T> {
+    public static int  DISTANCE=0;
     private File data;
     private ArrayList<Vertex> cities;
     private  ArrayList<Vertex> conection;
@@ -49,59 +50,7 @@ public class Controller {
     }
 
 
-    public void createList() {
-        this.cities.add(new Vertex("Bogotá"));
-        this.cities.add(new Vertex("Medellín"));
-        this.cities.add(new Vertex("Cali"));
-        this.cities.add(new Vertex("Barranquilla"));
-        this.cities.add(new Vertex("Cartagena"));
-        this.cities.add(new Vertex("Santa Marta"));
-        this.cities.add(new Vertex("Manizales"));
-        this.cities.add(new Vertex("Pereira"));
-        this.cities.add(new Vertex("Armenia"));
-        this.cities.add(new Vertex("Cúcuta"));
-        this.cities.add(new Vertex("Bucaramanga"));
-        this.cities.add(new Vertex("Ibagué"));
-        this.cities.add(new Vertex("Villavicencio"));
-        this.cities.add(new Vertex("Neiva"));
-        this.cities.add(new Vertex("Pasto"));
-        this.cities.add(new Vertex("Popayán"));
-        this.cities.add(new Vertex("Sincelejo"));
-        this.cities.add(new Vertex("Valledupar"));
-        this.cities.add(new Vertex("Tunja"));
-        this.cities.add(new Vertex("Riohacha"));
-        this.cities.add(new Vertex("Montería"));
-        this.cities.add(new Vertex("Quibdó"));
-        this.cities.add(new Vertex("Florencia"));
-        this.cities.add(new Vertex("Yopal"));
-        this.cities.add(new Vertex("Villanueva"));
-        this.cities.add(new Vertex("San Andrés"));
-        this.cities.add(new Vertex("Leticia"));
-        this.cities.add(new Vertex("Inírida"));
-        this.cities.add(new Vertex("Mitu"));
-        this.cities.add(new Vertex("Puerto Carreño"));
-        this.cities.add(new Vertex("Arauca"));
-        this.cities.add(new Vertex("Barrancabermeja"));
-        this.cities.add(new Vertex("Tumaco"));
-        this.cities.add(new Vertex("Turbo"));
-        this.cities.add(new Vertex("Magangué"));
-        this.cities.add(new Vertex("Girardot"));
-        this.cities.add(new Vertex("Sogamoso"));
-        this.cities.add(new Vertex("Duitama"));
-        this.cities.add(new Vertex("Tulua"));
-        this.cities.add(new Vertex("Ocaña"));
-        this.cities.add(new Vertex("Bello"));
-        this.cities.add(new Vertex("Ipiales"));
-        this.cities.add(new Vertex("La Dorada"));
-        this.cities.add(new Vertex("Pitalito"));
-        this.cities.add(new Vertex("Mocoa"));
-        this.cities.add(new Vertex("Santander de Quilichao"));
-        this.cities.add(new Vertex("Buenaventura"));
-        this.cities.add(new Vertex("Ciénaga"));
-        this.cities.add(new Vertex("Calarcá"));
-        this.cities.add(new Vertex("Totoro"));
 
-    }
     public void createConnection() {
         this.matrix.addEdge("Armenia", "Barranquilla", 600);
         this.matrix.addEdge("Armenia", "Cali", 320);
@@ -273,7 +222,15 @@ public class Controller {
         this.matrix.addEdge("Bello","Cali",680);
         this.matrix.addEdge("Bello","Armenia",500);
         this.matrix.addEdge("Bello","Ipiales",420);
-
+        this.matrix.addEdge("Ciénaga","Calarcá",590);
+        this.matrix.addEdge("Ciénaga","Popayán",650);
+        this.matrix.addEdge("Ciénaga","Pitalito",480);
+        this.matrix.addEdge("Calarcá","Ocaña",358);
+        this.matrix.addEdge("Calarcá","Neiva",358);
+        this.matrix.addEdge("Calarcá","Duitama",320);
+        this.matrix.addEdge("Ocaña","Mocoa",320);
+        this.matrix.addEdge("Ocaña","Bello",320);
+        this.matrix.addEdge("Ocaña","Sogamoso",320);
     }
     public String print(){
         return this.matrix.printVertices();
@@ -287,6 +244,13 @@ public class Controller {
         writer.flush();
         fos.close();
     }
+    public void distanceBeteenCities(String start,String dest){
+       matrix.bfs((T) start).toString();
+       DISTANCE=matrix.getVertex((T) dest).getTime();
+    }
 
 
+    public String startTravel(String start, String dest) {
+        return matrix.dijkstra((T)start,(T) dest).toString();
+    }
 }
