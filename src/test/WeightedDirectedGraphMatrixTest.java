@@ -2,7 +2,7 @@ package test;
 
 import model.*;
 import junit.framework.TestCase;
-
+import java.util.Arrays;
 import java.util.List;
 
 public class WeightedDirectedGraphMatrixTest extends TestCase {
@@ -39,6 +39,7 @@ public class WeightedDirectedGraphMatrixTest extends TestCase {
         graph.addEdge("A", "E", 2);
         graph.addEdge("A", "F", 3);
         graph.addEdge("B", "G", 2);
+        graph.addEdge("D", "E", 3);
         graph.addEdge("F", "H", 3);
         graph.addEdge("H", "G", 2);
         graph.addEdge("G", "I", 3);
@@ -107,7 +108,7 @@ public class WeightedDirectedGraphMatrixTest extends TestCase {
         for (Edge<String> edge : edgesA) {
             Vertex<String> destination = edge.getDestination();
             int weight = edge.getWeight();
-            System.out.println("A -> " + destination.getValue() + " (weight: " + weight + ")");
+//            System.out.println("A -> " + destination.getValue() + " (weight: " + weight + ")");
         }
     }
 
@@ -191,6 +192,50 @@ public class WeightedDirectedGraphMatrixTest extends TestCase {
         assertEquals(new Vertex<>("C"), graph.getVertex("C"));
     }
 
+    public void testBFS1() {
+        Scenary2();
+        List<String> expectedTraversal = Arrays.asList("A", "B");
+        List<String> traversal = graph.bfs("A");
+        assertEquals(expectedTraversal, traversal);
+    }
+
+    public void testBFS2() {
+        Scenary3();
+        List<String> expectedTraversal = Arrays.asList("A", "B", "C", "D");
+        List<String> traversal = graph.bfs("A");
+        assertEquals(expectedTraversal, traversal);
+    }
+
+    public void testBFS3() {
+        Scenary4();
+        List<String> bfsOrder = graph.bfs("A");
+
+        List<String> expectedOrder = Arrays.asList("A", "B", "C", "E", "F", "D", "G", "H", "I");
+
+        assertEquals(expectedOrder, bfsOrder);
+    }
+
+    public void testDFS1() {
+        Scenary2();
+        List<String> expectedTraversal = Arrays.asList("A", "B");
+        List<String> traversal = graph.dfs("A");
+        assertEquals(expectedTraversal, traversal);
+    }
+
+    public void testDFS2() {
+        Scenary3();
+        List<String> expectedTraversal = Arrays.asList("A", "B", "D", "C");
+        List<String> traversal = graph.dfs("A");
+        assertEquals(expectedTraversal, traversal);
+    }
+
+    public void testDFS3() {
+        Scenary4();
+        List<String> expectedTraversal = Arrays.asList("A", "B", "D", "E", "G", "I", "C", "F", "H");
+        List<String> traversal = graph.dfs("A");
+        assertEquals(expectedTraversal, traversal);
+    }
+
     public void testDijkstra() {
         Scenary2();
         String startVertex = "A";
@@ -265,14 +310,14 @@ public class WeightedDirectedGraphMatrixTest extends TestCase {
         Scenary4();
         int[][] expectedDistances = {
                 {0, 1, 2, 4, 2, 3, 3, 6, 6},
-                {Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 3, Integer.MAX_VALUE, Integer.MAX_VALUE, 2, Integer.MAX_VALUE, 5},
-                {Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 2, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE},
-                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE},
+                {Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 3, 6, Integer.MAX_VALUE, 2, Integer.MAX_VALUE, 5},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 2, 5, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 3, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE},
                 {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE},
-                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 10, Integer.MAX_VALUE, 0, 5, 3, 8},
-                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 5, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 3},
-                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 7, Integer.MAX_VALUE, Integer.MAX_VALUE, 2, 0, 5},
-                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 2, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0}
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 10, 13, 0, 5, 3, 8},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 5, 8, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 3},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 7, 10, Integer.MAX_VALUE, 2, 0, 5},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 2, 5, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0}
         };
 
         int[][] distances = graph.floydWarshall();

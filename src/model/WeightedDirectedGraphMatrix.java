@@ -95,6 +95,7 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
         if (startIndex != -1) {
             visited[startIndex] = true;
             queue.add(startIndex);
+            vertices[startIndex].setTime(0);
 
             while (!queue.isEmpty()) {
                 int vertexIndex = queue.poll();
@@ -104,6 +105,7 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
                     if (adjacencyMatrix[vertexIndex][i] != DEFAULT_WEIGHT && !visited[i]) {
                         visited[i] = true;
                         queue.add(i);
+                        vertices[i].setTime(vertices[vertexIndex].getTime() + 1);
                     }
                 }
             }
@@ -120,17 +122,21 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
 
         int startIndex = getIndex(startVertex);
         if (startIndex != -1) {
-            visited[startIndex] = true;
             stack.push(startIndex);
 
             while (!stack.isEmpty()) {
                 int vertexIndex = stack.pop();
-                result.add(vertices[vertexIndex].getValue());
+                if (!visited[vertexIndex]) {
+                    visited[vertexIndex] = true;
+                    result.add(vertices[vertexIndex].getValue());
 
-                for (int i = 0; i < vertexCount; i++) {
-                    if (adjacencyMatrix[vertexIndex][i] != DEFAULT_WEIGHT && !visited[i]) {
-                        visited[i] = true;
-                        stack.push(i);
+                    List<Edge<T>> adjacencyList = getAdjacencyListEdges(vertices[vertexIndex]);
+                    for (int i = adjacencyList.size() - 1; i >= 0; i--) {
+                        Edge<T> edge = adjacencyList.get(i);
+                        int neighborIndex = getIndex(edge.getDestination().getValue());
+                        if (!visited[neighborIndex]) {
+                            stack.push(neighborIndex);
+                        }
                     }
                 }
             }
@@ -342,6 +348,35 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
         return sb.toString();
     }
 
+    public List<Edge<T>> prim(T startVertexData) {
+        List<Edge<T>> minimumSpanningTree = new ArrayList<>();
 
+        Vertex<T> startVertex = getVertex(startVertexData);
+        if (startVertex == null) {
+            throw new IllegalArgumentException("The start vertex does not exist in the graph.");
+        }
 
+        Set<Vertex<T>> visited = new HashSet<>();
+        PriorityQueue<Edge<T>> minHeap = new PriorityQueue<>(Comparator.comparingInt(Edge::getWeight));
+        visited.add(startVertex);
+        minHeap.addAll(startVertex.getAdjacent());
+
+        while (!minHeap.isEmpty()) {
+            Edge<T> minEdge = minHeap.poll();
+            Vertex<T> destVertex = minEdge.getDestination();
+
+            if (!visited.contains(destVertex)) {
+                visited.add(destVertex);
+                minimumSpanningTree.add(minEdge);
+
+                for (Edge<T> edge : destVertex.getAdjacent()) {
+                    if (!visited.contains(edge.getDestination())) {
+                        minHeap.add(edge);
+                    }
+                }
+            }
+        }
+
+        return minimumSpanningTree;
+    }
 }

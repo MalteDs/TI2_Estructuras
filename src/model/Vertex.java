@@ -8,9 +8,12 @@ public class Vertex<T> {
     private T value;
     private List<Edge<T>> adjacent;
 
+    private int time;
+
     public Vertex(T value) {
         this.value = value;
         adjacent = new ArrayList<>();
+        this.time = 0;
     }
 
     public T getValue() {
@@ -23,6 +26,14 @@ public class Vertex<T> {
 
     public void addEdge(Edge<T> edge) {
         adjacent.add(edge);
+    }
+
+    public void setTime(int time) {
+    	this.time = time;
+    }
+
+    public int getTime() {
+    	return this.time;
     }
 
     @Override
