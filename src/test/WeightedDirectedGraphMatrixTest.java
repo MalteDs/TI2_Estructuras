@@ -190,4 +190,96 @@ public class WeightedDirectedGraphMatrixTest extends TestCase {
         Scenary3();
         assertEquals(new Vertex<>("C"), graph.getVertex("C"));
     }
+
+    public void testDijkstra() {
+        Scenary2();
+        String startVertex = "A";
+        String endVertex = "B";
+
+        List<String> shortestPath = graph.dijkstra(startVertex, endVertex);
+
+        assertEquals(2, shortestPath.size());
+        assertEquals(startVertex, shortestPath.get(0));
+        assertEquals(endVertex, shortestPath.get(1));
+    }
+
+    public void testDijkstra2() {
+        Scenary3();
+        String startVertex = "A";
+        String endVertex = "D";
+
+        List<String> shortestPath = graph.dijkstra(startVertex, endVertex);
+
+        assertEquals(3, shortestPath.size());
+        assertEquals(startVertex, shortestPath.get(0));
+        assertEquals("B", shortestPath.get(1));
+        assertEquals(endVertex, shortestPath.get(2));
+    }
+
+    public void testDijkstra3() {
+        Scenary4();
+        String startVertex = "A";
+        String endVertex = "H";
+
+        List<String> shortestWay = graph.dijkstra(startVertex, endVertex);
+
+        assertEquals(3, shortestWay.size());
+        assertEquals(startVertex, shortestWay.get(0));
+        assertEquals("F", shortestWay.get(1));
+        assertEquals(endVertex, shortestWay.get(2));
+    }
+
+    public void testFloydWarshall1() {
+        Scenary2();
+        int[][] expectedDistances = {
+                {0, 1},
+                {Integer.MAX_VALUE, 0}
+        };
+
+        int[][] distances = graph.floydWarshall();
+        for (int i = 0; i < expectedDistances.length; i++) {
+            for (int j = 0; j < expectedDistances[0].length; j++) {
+                assertEquals(expectedDistances[i][j], distances[i][j]);
+            }
+        }
+    }
+
+    public void testFloydWarshall2() {
+        Scenary3();
+        int[][] expectedDistances = {
+                {0, 1, 2, 4},
+                {Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 3},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 2},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0}
+        };
+
+        int[][] distances = graph.floydWarshall();
+        for (int i = 0; i < expectedDistances.length; i++) {
+            for (int j = 0; j < expectedDistances[0].length; j++) {
+                assertEquals(expectedDistances[i][j], distances[i][j]);
+            }
+        }
+    }
+
+    public void testFloydWarshall3() {
+        Scenary4();
+        int[][] expectedDistances = {
+                {0, 1, 2, 4, 2, 3, 3, 6, 6},
+                {Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 3, Integer.MAX_VALUE, Integer.MAX_VALUE, 2, Integer.MAX_VALUE, 5},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, 0, 2, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 10, Integer.MAX_VALUE, 0, 5, 3, 8},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 5, Integer.MAX_VALUE, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 3},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 7, Integer.MAX_VALUE, Integer.MAX_VALUE, 2, 0, 5},
+                {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 2, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, 0}
+        };
+
+        int[][] distances = graph.floydWarshall();
+        for (int i = 0; i < expectedDistances.length; i++) {
+            for (int j = 0; j < expectedDistances[0].length; j++) {
+                assertEquals(expectedDistances[i][j], distances[i][j]);
+            }
+        }
+    }
 }

@@ -1,10 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
 
@@ -38,10 +34,20 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
     public void addEdge(T sourceData, T destData, int weight) {
         int sourceIndex = getIndex(sourceData);
         int destIndex = getIndex(destData);
-        System.out.println(sourceIndex);
-        System.out.println(destIndex);
+//        System.out.println(sourceIndex);
+//        System.out.println(destIndex);
         if (sourceIndex != -1 && destIndex != -1) {
             adjacencyMatrix[sourceIndex][destIndex] = weight;
+            Vertex<T> sourceVertex = vertices[sourceIndex];
+            Vertex<T> destVertex = vertices[destIndex];
+            Edge<T> edge = new Edge<>(destVertex, weight);
+            sourceVertex.addEdge(edge);
+
+            //Por si implementamos ida y vuelta, bidireccional
+//            edge = new Edge<>(sourceVertex, weight);
+//            destVertex.addEdge(edge);
+        } else {
+            throw new IllegalArgumentException("One or both vertices do not exist in the graph.");
         }
     }
 
@@ -49,13 +55,12 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
     public void removeVertex(T data) {
         int index = getIndex(data);
         if (index != -1) {
-            // Eliminar la fila correspondiente al vértice en la matriz
+
             for (int i = index; i < vertexCount - 1; i++) {
                 vertices[i] = vertices[i + 1];
             }
             vertices[vertexCount - 1] = null;
 
-            // Eliminar la columna correspondiente al vértice en la matriz
             for (int i = index; i < vertexCount - 1; i++) {
                 for (int j = 0; j < vertexCount; j++) {
                     adjacencyMatrix[i][j] = adjacencyMatrix[i + 1][j];
@@ -219,5 +224,124 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
         }
         return  msg;
     }
+
+    public List<T> dijkstra(T startVertex, T endVertex) {
+        int startIndex = getIndex(startVertex);
+        int endIndex = getIndex(endVertex);
+        System.out.println(startIndex);
+        System.out.println(endIndex);
+        if (startIndex == -1 || endIndex == -1) {
+            throw new IllegalArgumentException("One or both vertices do not exist in the graph.");
+        }
+
+        Map<T, Integer> distances = new HashMap<>();
+        Map<T, T> previousVertices = new HashMap<>();
+        Set<T> visited = new HashSet<>();
+
+        for (int i = 0; i < vertexCount; i++) {
+            T vertexValue = vertices[i].getValue();
+            distances.put(vertexValue, Integer.MAX_VALUE);
+        }
+        distances.put(startVertex, 0);
+
+        while (!visited.contains(endVertex) && visited.size() < vertexCount) {
+            T currentVertex = null;
+            int minDistance = Integer.MAX_VALUE;
+            for (int i = 0; i < vertexCount; i++) {
+                T vertexValue = vertices[i].getValue();
+                if (!visited.contains(vertexValue) && distances.get(vertexValue) < minDistance) {
+                    currentVertex = vertexValue;
+                    minDistance = distances.get(vertexValue);
+                }
+            }
+            visited.add(currentVertex);
+            List<Edge<T>> adjacencyList = getAdjacencyListEdges(vertices[getIndex(currentVertex)]);
+            for (Edge<T> edge : adjacencyList) {
+                T destinationValue = edge.getDestination().getValue();
+                int weight = edge.getWeight();
+                int newDistance = distances.get(currentVertex) + weight;
+                if (newDistance < distances.get(destinationValue)) {
+                    distances.put(destinationValue, newDistance);
+                    previousVertices.put(destinationValue, currentVertex);
+                }
+            }
+        }
+
+        List<T> shortestPath = new ArrayList<>();
+        T currentVertex = endVertex;
+        while (currentVertex != null) {
+            shortestPath.add(0, currentVertex);
+            currentVertex = previousVertices.get(currentVertex);
+        }
+
+        return shortestPath;
+    }
+
+    public String getAdjacencyMatrixAsString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < vertexCount; i++) {
+            for (int j = 0; j < vertexCount; j++) {
+                int weight = adjacencyMatrix[i][j];
+                if (weight != DEFAULT_WEIGHT) {
+                    sb.append(String.format("%4d", weight));
+                } else {
+                    sb.append("  - ");
+                }
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    public int[][] floydWarshall() {
+        int[][] dist = new int[vertexCount][vertexCount];
+
+        for (int i = 0; i < vertexCount; i++) {
+            for (int j = 0; j < vertexCount; j++) {
+                if (adjacencyMatrix[i][j] != DEFAULT_WEIGHT) {
+                    dist[i][j] = adjacencyMatrix[i][j];
+                } else {
+                    dist[i][j] = Integer.MAX_VALUE;
+                }
+            }
+        }
+
+        for (int k = 0; k < vertexCount; k++) {
+            for (int i = 0; i < vertexCount; i++) {
+                for (int j = 0; j < vertexCount; j++) {
+                    if (dist[i][k] != Integer.MAX_VALUE && dist[k][j] != Integer.MAX_VALUE && dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < vertexCount; i++) {
+            dist[i][i] = 0;
+        }
+
+        return dist;
+    }
+
+    public String printFloydWarshall(int[][] dist) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < vertexCount; i++) {
+            for (int j = 0; j < vertexCount; j++) {
+                if (dist[i][j] == Integer.MAX_VALUE) {
+                    sb.append("  - ");
+                } else {
+                    sb.append(String.format("%4d", dist[i][j]));
+                }
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+
 
 }

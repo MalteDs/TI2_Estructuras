@@ -45,6 +45,15 @@ public class Vertex<T> {
 
     @Override
     public String toString() {
-        return "Vertex{" + "value=" + value + ", adjacent=" + adjacent + '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("Vertex{value=").append(value).append(", adjacent=[");
+        for (int i = 0; i < adjacent.size(); i++) {
+            sb.append(adjacent.get(i).getDestination().getValue());
+            if (i < adjacent.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]}");
+        return sb.toString();
     }
 }
