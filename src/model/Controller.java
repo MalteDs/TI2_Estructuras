@@ -251,6 +251,8 @@ public class Controller<T> {
 
 
     public String startTravel(String start, String dest) {
-        return matrix.dijkstra((T)start,(T) dest).toString();
+        if(matrix.dijkstra((T)start,(T) dest) == null){
+            return "The written cities do not exist or were misspelled, see the list of cities and try again";
+        } else  return matrix.dijkstra((T)start,(T) dest).toString();
     }
 }

@@ -237,7 +237,8 @@ public class WeightedDirectedGraphMatrix<T> implements Grafo<T> {
         System.out.println(startIndex);
         System.out.println(endIndex);
         if (startIndex == -1 || endIndex == -1) {
-            throw new IllegalArgumentException("One or both vertices do not exist in the graph.");
+            return null;
+//            throw new IllegalArgumentException("One or both vertices do not exist in the graph.");
         }
 
         Map<T, Integer> distances = new HashMap<>();
